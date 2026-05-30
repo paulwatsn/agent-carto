@@ -7,70 +7,57 @@
 
   <script type="module" src="https://js.arcgis.com/5.0/"></script>
 
+  <script type="module">
+    import OAuthInfo from "https://js.arcgis.com/5.0/@arcgis/core/identity/OAuthInfo.js";
+    import IdentityManager from "https://js.arcgis.com/5.0/@arcgis/core/identity/IdentityManager.js";
+
+    const info = new OAuthInfo({
+      appId: "TON_CLIENT_ID",
+      portalUrl: "https://www.arcgis.com",
+      popup: true,
+      popupCallbackUrl: "https://paulwatsn.github.io/agent-carto/oauth-callback.html"
+    });
+
+    IdentityManager.registerOAuthInfos([info]);
+    await IdentityManager.getCredential("https://www.arcgis.com/sharing");
+  </script>
+
   <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-    }
-    calcite-shell {
-      display: flex;
-      height: 100vh;
-    }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    calcite-shell { display: flex; height: 100vh; }
   </style>
 </head>
 
 <body class="calcite-mode-light" lang="fr">
   <calcite-shell>
-
-    <arcgis-map id="map" item-id="e8119d773ab6463aa3fbb20009d86440">
-    </arcgis-map>
-
+    <arcgis-map id="map" item-id="e8119d773ab6463aa3fbb20009d86440"></arcgis-map>
     <calcite-shell-panel slot="panel-end" width="l">
       <calcite-panel>
-        <arcgis-assistant
-          reference-element="#map"
-          heading="Assistant cartographique"
-          description="Interrogez les données de la carte en langage naturel">
-
+        <arcgis-assistant reference-element="#map" heading="Assistant cartographique" description="Interrogez les données de la carte en langage naturel">
           <arcgis-assistant-navigation-agent></arcgis-assistant-navigation-agent>
           <arcgis-assistant-data-exploration-agent></arcgis-assistant-data-exploration-agent>
           <arcgis-assistant-help-agent></arcgis-assistant-help-agent>
-
-          <calcite-button
-            id="btn-reset"
-            slot="footer-content"
-            width="full"
-            appearance="outline"
-            icon-start="trash">
+          <calcite-button id="btn-reset" slot="footer-content" width="full" appearance="outline" icon-start="trash">
             Réinitialiser la conversation
           </calcite-button>
-
         </arcgis-assistant>
       </calcite-panel>
     </calcite-shell-panel>
-
   </calcite-shell>
 
   <script type="module">
     const assistant = document.querySelector("arcgis-assistant");
-
     assistant.suggestedPrompts = [
       "Quelles données sont disponibles sur cette carte ?",
       "Zoom sur la France entière",
       "Montre-moi les données disponibles"
     ];
-
     assistant.logEnabled = true;
     assistant.copyEnabled = true;
-
     document.getElementById("btn-reset").addEventListener("click", async () => {
-      await assistant.submitMessage(
-        "Réinitialise tous les filtres et rezoome à l'étendue initiale"
-      );
+      await assistant.submitMessage("Réinitialise tous les filtres et rezoome à l'étendue initiale");
       await assistant.clearChatHistory();
     });
   </script>
-
 </body>
 </html>
