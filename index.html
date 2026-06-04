@@ -1,63 +1,57 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIG Conversationnel — Prototype mémoire</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Agent Cartographique — Communes du Val d'Oise</title>
+    <script type="module" src="https://js.arcgis.com/5.0/"></script>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+      calcite-shell {
+        display: flex;
+        height: 100vh;
+      }
+    </style>
+  </head>
 
-  <script type="module" src="https://js.arcgis.com/5.0/"></script>
+  <body>
+    <calcite-shell>
+      <arcgis-map id="carte-vdo" item-id="48ca49bb92c94f01b7c24eee1c7d7e0a">
+        <arcgis-zoom slot="top-left"></arcgis-zoom>
+        <arcgis-expand slot="top-left">
+          <arcgis-legend></arcgis-legend>
+        </arcgis-expand>
+      </arcgis-map>
 
-  <script type="module">
-    import OAuthInfo from "https://js.arcgis.com/5.0/@arcgis/core/identity/OAuthInfo.js";
-    import IdentityManager from "https://js.arcgis.com/5.0/@arcgis/core/identity/IdentityManager.js";
+      <calcite-shell-panel slot="panel-end" width="l" id="assistant-panel">
+        <calcite-panel>
+          <arcgis-assistant
+            log-enabled
+            copy-enabled
+            reference-element="#carte-vdo"
+            heading="Assistant — Communes et EPCI du Val d'Oise"
+            description="Explorez les données démographiques et géographiques des communes et EPCI du Val d'Oise."
+            entry-message="Bonjour ! Je peux vous aider à explorer les  et les EPCI du Val d'Oise. Posez-moi une question sur la population, la superficie ou d'autres caractéristiques des communes et EPCI.">
+            <arcgis-assistant-navigation-agent></arcgis-assistant-navigation-agent>
+            <arcgis-assistant-data-exploration-agent></arcgis-assistant-data-exploration-agent>
+            <arcgis-assistant-help-agent></arcgis-assistant-help-agent>
+          </arcgis-assistant>
+        </calcite-panel>
+      </calcite-shell-panel>
+    </calcite-shell>
 
-    const info = new OAuthInfo({
-      appId: "d7LiMiABDywMzpa2",
-      portalUrl: "https://www.arcgis.com",
-      popup: false,
-      popupCallbackUrl: "https://paulwatsn.github.io/agent-carto/oauth-callback.html"
-    });
-
-    IdentityManager.registerOAuthInfos([info]);
-    await IdentityManager.getCredential("https://www.arcgis.com/sharing");
-  </script>
-
-  <style>
-    html, body { margin: 0; padding: 0; height: 100%; }
-    calcite-shell { display: flex; height: 100vh; }
-  </style>
-</head>
-
-<body class="calcite-mode-light" lang="fr">
-  <calcite-shell>
-    <arcgis-map id="map" item-id="e8119d773ab6463aa3fbb20009d86440">
-    <calcite-shell-panel slot="panel-end" width="l">
-      <calcite-panel>
-        <arcgis-assistant reference-element="#map" heading="Assistant cartographique" description="Interrogez les données de la carte en langage naturel">
-          <arcgis-assistant-navigation-agent></arcgis-assistant-navigation-agent>
-          <arcgis-assistant-data-exploration-agent></arcgis-assistant-data-exploration-agent>
-          <arcgis-assistant-help-agent></arcgis-assistant-help-agent>
-          <calcite-button id="btn-reset" slot="footer-content" width="full" appearance="outline" icon-start="trash">
-            Réinitialiser la conversation
-          </calcite-button>
-        </arcgis-assistant>
-      </calcite-panel>
-    </calcite-shell-panel>
-  </calcite-shell>
-
-  <script type="module">
-    const assistant = document.querySelector("arcgis-assistant");
-    assistant.suggestedPrompts = [
-      "Quelles données sont disponibles sur cette carte ?",
-      "Zoom sur la France entière",
-      "Montre-moi les données disponibles"
-    ];
-    assistant.logEnabled = true;
-    assistant.copyEnabled = true;
-    document.getElementById("btn-reset").addEventListener("click", async () => {
-      await assistant.submitMessage("Réinitialise tous les filtres et rezoome à l'étendue initiale");
-      await assistant.clearChatHistory();
-    });
-  </script>
-</body>
+    <script type="module">
+      const assistantElement = document.querySelector("arcgis-assistant");
+      assistantElement.suggestedPrompts = [
+        "Quelle est la commune la plus peuplée du Val d'Oise ?",
+        "Quelles communes ont une superficie supérieure à 20 km² ?",
+        "Zoom sur Cergy",
+        "Compare la population des 5 plus grandes communes",
+      ];
+    </script>
+  </body>
 </html>
